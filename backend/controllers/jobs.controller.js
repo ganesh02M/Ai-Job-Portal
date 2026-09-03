@@ -1,4 +1,5 @@
 import Job from "../models/Job.js";
+import { fetchJSearchJobs } from "../services/jsearch.service.js";
 
 // GET /api/jobs
 // Supports: ?keyword=&location=&jobType=&experienceLevel=&salaryMin=&salaryMax=&page=&limit=
@@ -14,6 +15,24 @@ export const getJobs = async (req, res) => {
       page = 1,
       limit = 10,
     } = req.query;
+
+    // If there's a real keyword search, pull fresh live results from JSearch
+// and upsert them into our DB as external jobs
+if (keyword && keyword.trim().length > 1) {
+  const liveJobs = await fetchJSearchJobs({
+    query: `${keyword} ${location || "India"}`,
+    numPages: 1,
+  });
+
+  for (const j of liveJobs) {
+    if (!j.externalJobId || !j.title || !j.company) continue;
+    await Job.findOneAndUpdate(
+      { externalJobId: j.externalJobId },
+      { ...j, source: "external", isActive: true },
+      { upsert: true }
+    );
+  }
+}
 
     const filter = { isActive: true };
 
