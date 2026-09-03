@@ -14,13 +14,14 @@ export async function fetchJSearchJobs({ query, numPages = 1 } = {}) {
   if (!query || !query.trim()) return [];
 
   try {
-    const response = await axios.get("https://jsearch.p.rapidapi.com/search", {
-      params: {
-        query,
-        page: "1",
-        num_pages: String(numPages),
-        country: "in",
-      },
+    const response = await axios.get("https://jsearch.p.rapidapi.com/search-v2", {
+     params: {
+  query,
+  page: "1",
+  num_pages: String(numPages),
+  country: "in",
+  date_posted: "all",
+},
       headers: {
         "x-rapidapi-host": RAPIDAPI_HOST,
         "x-rapidapi-key": process.env.JSEARCH_API_KEY,
@@ -45,10 +46,12 @@ export async function fetchJSearchJobs({ query, numPages = 1 } = {}) {
       salaryMin: j.job_min_salary || undefined,
       salaryMax: j.job_max_salary || undefined,
     }));
-  } catch (err) {
-    console.error("fetchJSearchJobs error:", err.message);
-    return [];
-  }
+ } catch (err) {
+  console.error("fetchJSearchJobs error:", err.message);
+  console.error("fetchJSearchJobs response data:", JSON.stringify(err.response?.data));
+  console.error("fetchJSearchJobs status:", err.response?.status);
+  return [];
+}
 }
 
 function mapJobType(raw = "") {
