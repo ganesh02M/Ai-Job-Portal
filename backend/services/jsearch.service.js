@@ -28,8 +28,8 @@ export async function fetchJSearchJobs({ query, numPages = 1 } = {}) {
       },
       timeout: 8000,
     });
-
-    const jobs = response.data?.data || [];
+    
+    const jobs = response.data?.data?.jobs || [];
 
     return jobs.map((j) => ({
       externalJobId: `JSEARCH_${j.job_id}`,

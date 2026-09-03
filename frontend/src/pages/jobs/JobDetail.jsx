@@ -73,13 +73,14 @@ export default function JobDetail() {
       <div className="flex gap-3 mt-6">
         {job.source === "external" ? (
           <a
-            href={job.externalApplyUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="bg-primary-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-primary-700"
-          >
-            Apply on Indeed
-          </a>
+         
+  href={job.externalApplyUrl}
+  target="_blank"
+  rel="noreferrer"
+  className="bg-primary-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-primary-700"
+>
+  Apply on External Site
+</a>
         ) : (
           <button
             onClick={handleApply}
